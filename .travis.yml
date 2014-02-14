@@ -1,0 +1,39 @@
+language: cpp
+
+jobs:
+  include:
+    # linux native build
+    - name: "Linux native"
+      os: linux
+      compiler: gcc
+      dist: bionic
+      env:
+        - TARGET="linux"
+
+    # linux with win64 cross-compilation
+    - name: "win64 cross-compiled"
+      os: linux
+      compiler: gcc
+      dist: bionic
+      env:
+        - TARGET="win64"
+
+    # macOS native build
+    - name: "macOS native"
+      os: osx
+      osx_image: xcode9.4
+      env:
+        - TARGET="macos"
+
+before_install:
+  - bash ${TRAVIS_BUILD_DIR}/.travis/before_install.sh
+
+install:
+  - bash ${TRAVIS_BUILD_DIR}/.travis/install.sh
+
+script:
+  - bash ${TRAVIS_BUILD_DIR}/.travis/script.sh
+
+#notifications:
+  #email: true
+  #irc: "ircs://chat.freenode.net:7070/#kxstudio"

@@ -1,0 +1,4 @@
+{
+    global: DllMain; InitDll; ExitDll; ModuleEntry; ModuleExit; GetPluginFactory;
+    local: *;
+};
