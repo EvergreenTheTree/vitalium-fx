@@ -298,7 +298,7 @@ jobs:
           tar czf ${{ github.event.repository.name }}-linux-x86_64-debug-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}.tar.gz -C ${{ env.DESTDIR }}/usr/lib lv2 vst vst3
       - uses: actions/upload-artifact@v2
         with:
-          name: ${{ github.event.repository.name }}-linux-x86_64-debug-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}
+          name: ${{ github.event.repository.name }}-linux-x85_64-debug-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}
           path: |
             *.tar.gz
 
@@ -316,99 +316,99 @@ jobs:
           meson build --buildtype=release --prefix=/usr -Dlinux-embed=true
           ninja -C build
 
-  macos-intel:
-    runs-on: macos-10.15
-    steps:
-      - uses: actions/checkout@v2
-      #- name: Set up cache
-        #id: cache
-        #uses: actions/cache@v2
-        #with:
-          #path: |
-            #build
-          #key: macos-intel-v${{ env.CACHE_VERSION }}
-      - name: Set up dependencies
-        run: |
-          brew install meson
-      - name: Build macOS intel
-        env:
-          CFLAGS: -arch x86_64 -mmacosx-version-min=10.8 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_8
-          CXXFLAGS: -arch x86_64 -mmacosx-version-min=10.8 -stdlib=libc++ -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_8
-          LDFLAGS: -arch x86_64 -mmacosx-version-min=10.8 -stdlib=libc++
-        run: |
-          meson build --buildtype=release --prefix=/usr
-          ninja -C build
-      - name: Install macOS intel
-        run: |
-          ninja -C build install
-      - name: Set sha8 (non-release)
-        if: startsWith(github.ref, 'refs/tags/') != true
-        id: slug1
-        run: echo "::set-output name=sha8::$(echo ${{ github.sha }} | cut -c1-8)"
-      - name: Set sha8 (release)
-        if: startsWith(github.ref, 'refs/tags/')
-        id: slug2
-        run: echo "::set-output name=sha8::$(echo ${{ github.ref_name }})"
-      - name: Set sha8
-        id: slug
-        run: echo "::set-output name=sha8::$(echo ${{ steps.slug1.outputs.sha8 || steps.slug2.outputs.sha8 }})"
-      - name: Pack binaries
-        run: |
-          tar czf ${{ github.event.repository.name }}-macOS-intel-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}.tar.gz -C ${{ env.DESTDIR }}/usr/lib lv2 vst vst3
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ${{ github.event.repository.name }}-macOS-intel-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}
-          path: |
-            *.tar.gz
+  #macos-intel:
+  #  runs-on: macos-10.15
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    #- name: Set up cache
+  #      #id: cache
+  #      #uses: actions/cache@v2
+  #      #with:
+  #        #path: |
+  #          #build
+  #        #key: macos-intel-v${{ env.CACHE_VERSION }}
+  #    - name: Set up dependencies
+  #      run: |
+  #        brew install meson
+  #    - name: Build macOS intel
+  #      env:
+  #        CFLAGS: -arch x86_64 -mmacosx-version-min=10.8 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_8
+  #        CXXFLAGS: -arch x86_64 -mmacosx-version-min=10.8 -stdlib=libc++ -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_8 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_8
+  #        LDFLAGS: -arch x86_64 -mmacosx-version-min=10.8 -stdlib=libc++
+  #      run: |
+  #        meson build --buildtype=release --prefix=/usr
+  #        ninja -C build
+  #    - name: Install macOS intel
+  #      run: |
+  #        ninja -C build install
+  #    - name: Set sha8 (non-release)
+  #      if: startsWith(github.ref, 'refs/tags/') != true
+  #      id: slug1
+  #      run: echo "::set-output name=sha8::$(echo ${{ github.sha }} | cut -c1-8)"
+  #    - name: Set sha8 (release)
+  #      if: startsWith(github.ref, 'refs/tags/')
+  #      id: slug2
+  #      run: echo "::set-output name=sha8::$(echo ${{ github.ref_name }})"
+  #    - name: Set sha8
+  #      id: slug
+  #      run: echo "::set-output name=sha8::$(echo ${{ steps.slug1.outputs.sha8 || steps.slug2.outputs.sha8 }})"
+  #    - name: Pack binaries
+  #      run: |
+  #        tar czf ${{ github.event.repository.name }}-macOS-intel-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}.tar.gz -C ${{ env.DESTDIR }}/usr/lib lv2 vst vst3
+  #    - uses: actions/upload-artifact@v2
+  #      with:
+  #        name: ${{ github.event.repository.name }}-macOS-intel-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}
+  #        path: |
+  #          *.tar.gz
 
-  macos-universal:
-    runs-on: macos-10.15
-    steps:
-      - uses: actions/checkout@v2
-      #- name: Set up cache
-        #id: cache
-        #uses: actions/cache@v2
-        #with:
-          #path: |
-            #build
-          #key: macos-universal-v${{ env.CACHE_VERSION }}
-      - name: Fix up Xcode
-        run: |
-          sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
-          sudo xcode-select -s "/Applications/Xcode_12.3.app"
-      - name: Set up dependencies
-        run: |
-          brew install meson
-      - name: Build macOS universal
-        env:
-          CFLAGS: -mmacosx-version-min=10.12 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_12
-          CXXFLAGS: -mmacosx-version-min=10.12 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_12
-          LDFLAGS: -mmacosx-version-min=10.12
-        run: |
-          meson build --buildtype=release --prefix=/usr -Dbuild-universal=true
-          ninja -C build
-      - name: Install macOS universal
-        run: |
-          ninja -C build install
-      - name: Set sha8 (non-release)
-        if: startsWith(github.ref, 'refs/tags/') != true
-        id: slug1
-        run: echo "::set-output name=sha8::$(echo ${{ github.sha }} | cut -c1-8)"
-      - name: Set sha8 (release)
-        if: startsWith(github.ref, 'refs/tags/')
-        id: slug2
-        run: echo "::set-output name=sha8::$(echo ${{ github.ref_name }})"
-      - name: Set sha8
-        id: slug
-        run: echo "::set-output name=sha8::$(echo ${{ steps.slug1.outputs.sha8 || steps.slug2.outputs.sha8 }})"
-      - name: Pack binaries
-        run: |
-          tar czf ${{ github.event.repository.name }}-macOS-universal-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}.tar.gz -C ${{ env.DESTDIR }}/usr/lib lv2 vst vst3
-      - uses: actions/upload-artifact@v2
-        with:
-          name: ${{ github.event.repository.name }}-macOS-universal-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}
-          path: |
-            *.tar.gz
+  #macos-universal:
+  #  runs-on: macos-11
+  #  steps:
+  #    - uses: actions/checkout@v2
+  #    #- name: Set up cache
+  #      #id: cache
+  #      #uses: actions/cache@v2
+  #      #with:
+  #        #path: |
+  #          #build
+  #        #key: macos-universal-v${{ env.CACHE_VERSION }}
+  #    - name: Fix up Xcode
+  #      run: |
+  #        sudo rm -Rf /Library/Developer/CommandLineTools/SDKs/*
+  #        sudo xcode-select -s "/Applications/Xcode_12.3.app"
+  #    - name: Set up dependencies
+  #      run: |
+  #        brew install meson
+  #    - name: Build macOS universal
+  #      env:
+  #        CFLAGS: -mmacosx-version-min=10.12 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_12
+  #        CXXFLAGS: -mmacosx-version-min=10.12 -DMAC_OS_X_VERSION_MAX_ALLOWED=MAC_OS_X_VERSION_10_12 -DMAC_OS_X_VERSION_MIN_REQUIRED=MAC_OS_X_VERSION_10_12
+  #        LDFLAGS: -mmacosx-version-min=10.12
+  #      run: |
+  #        meson build --buildtype=release --prefix=/usr -Dbuild-universal=true
+  #        ninja -C build
+  #    - name: Install macOS universal
+  #      run: |
+  #        ninja -C build install
+  #    - name: Set sha8 (non-release)
+  #      if: startsWith(github.ref, 'refs/tags/') != true
+  #      id: slug1
+  #      run: echo "::set-output name=sha8::$(echo ${{ github.sha }} | cut -c1-8)"
+  #    - name: Set sha8 (release)
+  #      if: startsWith(github.ref, 'refs/tags/')
+  #      id: slug2
+  #      run: echo "::set-output name=sha8::$(echo ${{ github.ref_name }})"
+  #    - name: Set sha8
+  #      id: slug
+  #      run: echo "::set-output name=sha8::$(echo ${{ steps.slug1.outputs.sha8 || steps.slug2.outputs.sha8 }})"
+  #    - name: Pack binaries
+  #      run: |
+  #        tar czf ${{ github.event.repository.name }}-macOS-universal-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}.tar.gz -C ${{ env.DESTDIR }}/usr/lib lv2 vst vst3
+  #    - uses: actions/upload-artifact@v2
+  #      with:
+  #        name: ${{ github.event.repository.name }}-macOS-universal-${{ github.event.pull_request.number || steps.slug.outputs.sha8 }}
+  #        path: |
+  #          *.tar.gz
 
   #win32:
     #runs-on: ubuntu-20.04
