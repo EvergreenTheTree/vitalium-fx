@@ -40,69 +40,8 @@ option('build-vst3',
     description: 'Build VST3 plugin variants',
 )
 
-option('build-juce5-only',
-    type: 'boolean',
-    value: false,
-    description: 'Build only juce5 libraries and plugins',
-)
-
-option('build-juce6-only',
-    type: 'boolean',
-    value: false,
-    description: 'Build only juce6 libraries and plugins',
-)
-
-option('build-juce7-only',
-    type: 'boolean',
-    value: false,
-    description: 'Build only juce7 libraries and plugins',
-)
-
 option('build-universal',
     type: 'boolean',
     value: false,
     description: 'Build macOS universal binaries',
-)
-
-option('plugins',
-    type : 'array',
-    description: 'Plugins to build',
-    choices : [
-        # juce5
-        'arctican-function',
-        'arctican-pilgrim',
-        'dexed',
-        'drowaudio-distortion',
-        'drowaudio-distortionshaper',
-        'drowaudio-flanger',
-        'drowaudio-reverb',
-        'drowaudio-tremolo',
-        'drumsynth',
-        'easySSP',
-        'eqinox',
-        'HiReSam',
-        'juce-opl',
-        'klangfalter',
-        'LUFSMeter',
-        'LUFSMeter-Multi',
-        'luftikus',
-        'obxd',
-        'pitchedDelay',
-        'refine',
-        'stereosourceseparation',
-        'tal-dub-3',
-        'tal-filter',
-        'tal-filter-2',
-        'tal-noisemaker',
-        'tal-reverb',
-        'tal-reverb-2',
-        'tal-reverb-3',
-        'tal-vocoder-2',
-        'temper',
-        'vex',
-        'wolpertinger',
-        # juce6
-        'swankyamp',
-        'vitalium',
-    ],
 )
