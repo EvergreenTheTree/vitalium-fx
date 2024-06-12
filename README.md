@@ -1,4 +1,6 @@
-# DISTRHO Ports
+# Vitalium FX
+
+**ATTENTION**: This repository is simply a clone of DISTRHO-Ports with everything except vitalium stripped out. I have not gotten around to this project yet, so if you try to build it, you'll just get the normal Vitalium instrument VST.
 
 [![Build Status](https://travis-ci.org/DISTRHO/DISTRHO-Ports.png)](https://travis-ci.org/DISTRHO/DISTRHO-Ports)
 
